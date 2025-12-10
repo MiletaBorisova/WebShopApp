@@ -15,7 +15,7 @@ namespace WebShopApp.Infrastructure.Data.Entities
         public DateTime OrderDate { get; set; }
         [Required]
         public int ProductId { get; set; }
-        public Product? Product { get; set; }
+        public virtual Product? Product { get; set; }
 
         [Required]
         public string? UserId { get; set; }
