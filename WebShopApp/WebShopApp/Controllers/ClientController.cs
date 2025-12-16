@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+using WebShopApp.Core.Contracts;
 using WebShopApp.Infrastructure.Data.Entities;
 using WebShopApp.Models.Client;
 
@@ -10,10 +11,12 @@ namespace WebShopApp.Controllers
     public class ClientController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IOrderService _orderService;
 
-        public ClientController(UserManager<ApplicationUser> userManager)
+        public ClientController(UserManager<ApplicationUser> userManager, IOrderService orderService)
         {
             this._userManager = userManager;
+            this._orderService = orderService;
         }
 
         // GET: ClientController
@@ -126,9 +129,14 @@ namespace WebShopApp.Controllers
 
             string id = bidingModel.Id;
             var user = await _userManager.FindByIdAsync(id);
-            if (user == null) 
+            if (user == null)
             {
                 return NotFound();
+            }
+            else if (_orderService.GetOrdersByUser(id).Count > 0 )
+            {
+                return RedirectToAction("Deny");
+
             }
             IdentityResult result = await _userManager.DeleteAsync(user);
             if (result.Succeeded) 
@@ -140,6 +148,11 @@ namespace WebShopApp.Controllers
         }
 
         public ActionResult Success()
+        {
+            return View();
+        }
+
+        public ActionResult Deny()
         {
             return View();
         }
