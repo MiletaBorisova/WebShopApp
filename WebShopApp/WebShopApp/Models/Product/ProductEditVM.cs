@@ -37,5 +37,9 @@ namespace WebShopApp.Models.Product
 
         [Display(Name = "Discount")]
         public decimal Discount { get; set; }
+
+        [Display(Name = "Discounted Price")]
+        public decimal DiscountedPrice => Price * (1 - Discount / 100m);
+
     }
 }

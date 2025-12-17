@@ -32,73 +32,67 @@
     </form>
 
     <!-- PRODUCTS GRID -->
-    <div class="row g-4">
+    <div class="row g-4" >
         @foreach (var item in Model)
         {
-            <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <!-- добавяме mb-4 -->
                 <div class="card product-card h-100">
-
                     <img src="@item.Picture"
                          class="card-img-top product-image"
                          alt="@item.ProductName">
 
                     <div class="card-body d-flex flex-column">
                         <h6 class="card-title">@item.ProductName</h6>
-
-                        <small class="text-muted">
-                            @item.BrandName • @item.CategoryName
-                        </small>
-
-                        <p class="fw-bold mt-2">@item.Price лв.</p>
+                        <small class="text-muted">@item.BrandName • @item.CategoryName</small>
+                        @* <p class="fw-bold mt-2">@item.Price лв.</p> *@
 
                         @if (item.Discount > 0)
                         {
-                            <span class="badge bg-danger mb-2">
-                                -@item.Discount%
-                            </span>
+                            <span class="badge bg-danger mb-2">-@item.Discount%</span>
                         }
 
                         <div class="mt-auto d-grid gap-2">
-                            <a asp-action="Details"
-                               asp-route-id="@item.Id"
-                               class="btn btn-success btn-sm">
-                                Details
-                            </a>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-success btn-sm">Details</a>
 
                             @if (User.Identity.IsAuthenticated)
                             {
-                                <a asp-controller="Order"
-                                   asp-action="Create"
-                                   asp-route-id="@item.Id"
-                                   class="btn btn-warning btn-sm">
-                                    Order
-                                </a>
+                                <a asp-controller="Order" asp-action="Create" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Order</a>
                             }
 
                             @if (User.Identity.IsAuthenticated && User.IsInRole("Administrator"))
                             {
-                                <a asp-action="Edit"
-                                   asp-route-id="@item.Id"
-                                   class="btn btn-outline-warning btn-sm">
-                                    Edit
-                                </a>
-
-                                <a asp-action="Delete"
-                                   asp-route-id="@item.Id"
-                                   class="btn btn-outline-danger btn-sm">
-                                    Delete
-                                </a>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning btn-sm">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm">Delete</a>
                             }
                         </div>
+
+                        <p class="fw-bold mt-2">
+                            @if (item.Discount > 0)
+                            {
+                                <span class="text-muted text-decoration-line-through">@item.Price лв.</span>
+                                <span class="text-danger">@item.DiscountedPrice лв.</span>
+                            }
+                            else
+                            {
+                                @item.Price
+                               
+                            }
+                        </p>
+
                     </div>
-                    <a asp-controller="Cart"
-                       asp-action="Add"
-                       asp-route-productId="@item.Id"
-                       class="btn btn-primary">
-                        Add to cart
-                    </a>
+
+                    <div class="card-footer d-flex justify-content-between">
+                        <a asp-controller="Cart" asp-action="Add" asp-route-productId="@item.Id" class="btn btn-primary btn-sm">Add to cart</a>
+
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <a asp-controller="Favorites" asp-action="Add" asp-route-productId="@item.Id" class="btn btn-outline-danger btn-sm">❤️ Любими</a>
+                        }
+                    </div>
                 </div>
             </div>
+
         }
     </div>
     

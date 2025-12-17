@@ -14,10 +14,10 @@
             <thead>
                 <tr>
                     <th>Продукт</th>
-                    <th>Цена</th>
-                    <th>Количество</th>
-                    <th>Общо</th>
-                    <th></th>
+                    <th>Цена</th>       <!-- единична цена с отстъпка -->
+                    <th>Количество</th> <!-- бутоните + и - -->
+                    <th>Общо</th>       <!-- Price * Quantity -->
+                    <th></th>           <!-- бутон за премахване -->
                 </tr>
             </thead>
             <tbody>
@@ -25,11 +25,16 @@
                 {
                     <tr>
                         <td>
-                            <img src="@item.Picture" width="60" class="me-2">
+                            <img src="@item.Picture" width="60" class="me-2" />
                             @item.ProductName
                         </td>
-                        <td>@item.Price лв.</td>
-                        <td>@item.Quantity</td>
+
+                        <!-- Цена на единица -->
+                        <td>
+                            @item.Price лв.
+                        </td>
+
+                        <!-- Количество с бутоните +/- -->
                         <td>
                             <div class="d-flex align-items-center">
                                 <a asp-action="DecreaseQuantity"
@@ -44,9 +49,13 @@
                             </div>
                         </td>
 
-                        <td>@item.Total лв.</td>
+                        <!-- Общата сума за реда -->
                         <td>
+                            @item.Total лв.
+                        </td>
 
+                        <!-- Бутон за премахване -->
+                        <td>
                             <a asp-action="Remove"
                                asp-route-productId="@item.Id"
                                class="btn btn-danger btn-sm">
@@ -58,10 +67,12 @@
             </tbody>
         </table>
 
+        <!-- Общо за количката -->
         <h4 class="text-end">Общо: @Model.GrandTotal лв.</h4>
 
         <div class="text-end">
-            <a class="btn btn-success">Поръчай</a>
+            <a class="btn btn-success" href="/Order/Create/2">Поръчай</a>
         </div>
+
     }
 </div>

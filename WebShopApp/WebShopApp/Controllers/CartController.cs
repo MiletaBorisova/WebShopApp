@@ -44,6 +44,8 @@ namespace WebShopApp.Controllers
 
             var item = cart.Items.FirstOrDefault(x => x.Id == productId);
 
+            decimal discountedPrice = product.Price * (1 - product.Discount / 100m);
+
             if (item == null)
             {
                 cart.Items.Add(new CartItemVM
@@ -51,7 +53,7 @@ namespace WebShopApp.Controllers
                     Id = productId,
                     ProductName = product.ProductName,
                     Picture = product.Picture,
-                    Price = product.Price,
+                    Price = product.Price * (1 - product.Discount / 100m),
                     Quantity = 1
                 });
             }

@@ -45,6 +45,15 @@
 
                         }
 
+                        @if (this.User.Identity.IsAuthenticated)
+                        {
+                           
+                            <a asp-controller="Favorites" asp-action="Index" class="nav-link">
+                                ❤️ Favorites
+                            </a>
+
+                        }
+
 
                         <li class="dropdown">
                             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
