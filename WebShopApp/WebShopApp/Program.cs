@@ -40,6 +40,8 @@ namespace WebShopApp
             builder.Services.AddTransient<IOrderService, OrderService>();
             builder.Services.AddTransient<IStatisticsService, StatisticsService>();
             builder.Services.AddScoped<IFavoriteService, FavoriteService>();
+            builder.Services.AddScoped<ICartService, CartService>();
+
 
 
             builder.Services.AddDistributedMemoryCache();

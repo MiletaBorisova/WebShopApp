@@ -1,10 +1,9 @@
-﻿@using WebShopApp.Models.Cart
-@model CartVM
+﻿@model WebShopApp.Infrastructure.Data.Entities.Cart
 
 <div class="container my-5">
     <h2>Моята количка</h2>
 
-    @if (!Model.Items.Any())
+    @if (Model.Items == null || !Model.Items.Any())
     {
         <p>Количката е празна.</p>
     }
@@ -25,8 +24,8 @@
                 {
                     <tr>
                         <td>
-                            <img src="@item.Picture" width="60" class="me-2" />
-                            @item.ProductName
+                            <img src="@item.Product.Picture" width="60" class="me-2" />
+                            @item.Product.ProductName
                         </td>
 
                         <!-- Цена на единица -->
@@ -51,7 +50,7 @@
 
                         <!-- Общата сума за реда -->
                         <td>
-                            @item.Total лв.
+                            @(item.Price* item.Quantity) лв.
                         </td>
 
                         <!-- Бутон за премахване -->
@@ -68,11 +67,12 @@
         </table>
 
         <!-- Общо за количката -->
-        <h4 class="text-end">Общо: @Model.GrandTotal лв.</h4>
+        <h4 class="text-end">
+            Общо: @Model.Items.Sum(i => i.Price * i.Quantity) лв.
+        </h4>
 
         <div class="text-end">
-            <a class="btn btn-success" href="/Order/Create/2">Поръчай</a>
+            <a class="btn btn-success" asp-controller="Order" asp-action="Create">Поръчай</a>
         </div>
-
     }
 </div>

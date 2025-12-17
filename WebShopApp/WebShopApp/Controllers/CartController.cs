@@ -1,115 +1,74 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using WebShopApp.Core.Contracts;
 using WebShopApp.Core.Services;
 using WebShopApp.Extensions;
-using WebShopApp.Models.Cart;
+using WebShopApp.Infrastructure.Data.Entities;
+
 
 namespace WebShopApp.Controllers
 {
-   
+    [Authorize]
     public class CartController : Controller
     {
-        private const string CartKey = "cart";
-        private readonly IProductService  _productService;
-        
-        private readonly IOrderService _orderService;
+        private readonly ICartService _cartService;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public CartController(IProductService productService, IOrderService orderService)
+        public CartController(ICartService cartService, UserManager<ApplicationUser> userManager)
         {
-            _productService = productService;
-            _orderService = orderService;
+            _cartService = cartService;
+            _userManager = userManager;
         }
 
-
+        private string GetUserId() => _userManager.GetUserId(User);
 
         // GET: CartController
-        public ActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var cart = HttpContext.Session.GetObject<CartVM>(CartKey) ?? new CartVM();
+            var userId = GetUserId();
+            var cart = await _cartService.GetCartByUserIdAsync(userId);
             return View(cart);
         }
 
-        public IActionResult Add(int productId)
+        public async Task<IActionResult> Add(int productId)
         {
-            var product = _productService.GetProductById(productId);
-
-            if (product == null)
-            {
-                return NotFound($"Product with ID {productId} not found");
-            }
-
-            var cart = HttpContext.Session.GetObject<CartVM>(CartKey) ?? new CartVM();
-
-            var item = cart.Items.FirstOrDefault(x => x.Id == productId);
-
-            decimal discountedPrice = product.Price * (1 - product.Discount / 100m);
-
-            if (item == null)
-            {
-                cart.Items.Add(new CartItemVM
-                {
-                    Id = productId,
-                    ProductName = product.ProductName,
-                    Picture = product.Picture,
-                    Price = product.Price * (1 - product.Discount / 100m),
-                    Quantity = 1
-                });
-            }
-            else
-            {
-                item.Quantity++;
-            }
-
-            HttpContext.Session.SetObject(CartKey, cart);
+            var userId = GetUserId();
+            await _cartService.AddItemAsync(userId, productId);
             return RedirectToAction("Index");
         }
 
-        public IActionResult Remove(int productId)
+
+        public async Task<IActionResult> Remove(int productId)
         {
-            var cart = HttpContext.Session.GetObject<CartVM>(CartKey);
-            var item = cart?.Items.FirstOrDefault(x => x.Id == productId);
-
-            if (item != null)
-            {
-                cart.Items.Remove(item);
-                HttpContext.Session.SetObject(CartKey, cart);
-            }
-
-            return RedirectToAction("Index");
-        }
-        public IActionResult IncreaseQuantity(int productId)
-        {
-            var cart = HttpContext.Session.GetObject<CartVM>(CartKey);
-            var item = cart?.Items.FirstOrDefault(x => x.Id == productId);
-
-            if (item != null)
-            {
-                item.Quantity++;
-                HttpContext.Session.SetObject(CartKey, cart);
-            }
-
+            var userId = GetUserId();
+            await _cartService.RemoveItemAsync(userId, productId);
             return RedirectToAction("Index");
         }
 
-        public IActionResult DecreaseQuantity(int productId)
-        {
-            var cart = HttpContext.Session.GetObject<CartVM>(CartKey);
-            var item = cart?.Items.FirstOrDefault(x => x.Id == productId);
 
+        public async Task<IActionResult> IncreaseQuantity(int productId)
+        {
+            var userId = GetUserId();
+            var cart = await _cartService.GetCartByUserIdAsync(userId);
+            var item = cart.Items.FirstOrDefault(i => i.ProductId == productId);
             if (item != null)
             {
-                item.Quantity--;
-
-                if (item.Quantity <= 0)
-                {
-                    cart.Items.Remove(item); // Ако количеството стане 0, премахваме продукта
-                }
-
-                HttpContext.Session.SetObject(CartKey, cart);
+                await _cartService.UpdateQuantityAsync(userId, productId, item.Quantity + 1);
             }
+            return RedirectToAction("Index");
+        }
 
+        public async Task<IActionResult> DecreaseQuantity(int productId)
+        {
+            var userId = GetUserId();
+            var cart = await _cartService.GetCartByUserIdAsync(userId);
+            var item = cart.Items.FirstOrDefault(i => i.ProductId == productId);
+            if (item != null)
+            {
+                await _cartService.UpdateQuantityAsync(userId, productId, item.Quantity - 1);
+            }
             return RedirectToAction("Index");
         }
 
