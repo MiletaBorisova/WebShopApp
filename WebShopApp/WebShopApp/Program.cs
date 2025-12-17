@@ -39,10 +39,17 @@ namespace WebShopApp
             builder.Services.AddTransient<IProductService, ProductService>();
             builder.Services.AddTransient<IOrderService, OrderService>();
             builder.Services.AddTransient<IStatisticsService, StatisticsService>();
+
+            builder.Services.AddDistributedMemoryCache();
+
+            builder.Services.AddSession();
+
             
 
+
             var app = builder.Build();
-            app.PrepareDatabase();  
+            app.PrepareDatabase();
+            app.UseSession();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
