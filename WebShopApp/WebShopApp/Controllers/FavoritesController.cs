@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using WebShopApp.Core.Contracts;
-using WebShopApp.Extensions;
+
 using WebShopApp.Infrastructure.Data;
 using WebShopApp.Infrastructure.Data.Entities;
 

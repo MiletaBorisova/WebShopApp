@@ -171,5 +171,36 @@ namespace WebShopApp.Controllers
                 return View();
             }
         }
+
+
+
+        [Authorize]
+        public async Task<IActionResult> CreateFromCart(
+    [FromServices] ICartService cartService)
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var cart = await cartService.GetCartByUserIdAsync(userId);
+
+            if (!cart.Items.Any())
+                return RedirectToAction("Index", "Cart");
+
+            foreach (var item in cart.Items)
+            {
+                _orderService.Create(
+                    item.ProductId,
+                    userId,
+                    item.Quantity
+                );
+            }
+
+            // 🧹 изчистване на количката
+            foreach (var item in cart.Items.ToList())
+            {
+                await cartService.RemoveItemAsync(userId, item.ProductId);
+            }
+
+            return RedirectToAction("MyOrders");
+        }
+
     }
 }

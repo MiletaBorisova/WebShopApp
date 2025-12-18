@@ -53,7 +53,7 @@ namespace WebShopApp
 
             var app = builder.Build();
             app.PrepareDatabase();
-            app.UseSession();
+            //app.UseSession();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

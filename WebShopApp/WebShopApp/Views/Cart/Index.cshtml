@@ -12,11 +12,12 @@
         <table class="table align-middle">
             <thead>
                 <tr>
+                    <th></th>
                     <th>Продукт</th>
-                    <th>Цена</th>       <!-- единична цена с отстъпка -->
-                    <th>Количество</th> <!-- бутоните + и - -->
-                    <th>Общо</th>       <!-- Price * Quantity -->
-                    <th></th>           <!-- бутон за премахване -->
+                    <th>Цена</th>
+                    <th>Количество</th>
+                    <th>Общо</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -24,41 +25,44 @@
                 {
                     <tr>
                         <td>
-                            <img src="@item.Product.Picture" width="60" class="me-2" />
-                            @item.Product.ProductName
+                            <img src="@item.Product.Picture"
+                                 alt="@item.Product.ProductName"
+                                 style="width:80px; height:auto; object-fit:contain;" />
                         </td>
 
-                        <!-- Цена на единица -->
                         <td>
-                            @item.Price лв.
+                            <strong>@item.Product.ProductName</strong>
                         </td>
 
-                        <!-- Количество с бутоните +/- -->
                         <td>
-                            <div class="d-flex align-items-center">
+                            @item.Price.ToString("0.00") лв.
+                        </td>
+
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
                                 <a asp-action="DecreaseQuantity"
-                                   asp-route-productId="@item.Id"
-                                   class="btn btn-sm btn-secondary me-2">-</a>
+                                   asp-route-productId="@item.ProductId"
+                                   class="btn btn-outline-secondary btn-sm">−</a>
 
-                                <span>@item.Quantity</span>
+                                <span class="fw-bold">@item.Quantity</span>
 
                                 <a asp-action="IncreaseQuantity"
-                                   asp-route-productId="@item.Id"
-                                   class="btn btn-sm btn-secondary ms-2">+</a>
+                                   asp-route-productId="@item.ProductId"
+                                   class="btn btn-outline-secondary btn-sm">+</a>
                             </div>
                         </td>
 
-                        <!-- Общата сума за реда -->
                         <td>
-                            @(item.Price* item.Quantity) лв.
+                            <strong>
+                                @((item.Price * item.Quantity).ToString("0.00")) лв.
+                            </strong>
                         </td>
 
-                        <!-- Бутон за премахване -->
                         <td>
                             <a asp-action="Remove"
-                               asp-route-productId="@item.Id"
+                               asp-route-productId="@item.ProductId"
                                class="btn btn-danger btn-sm">
-                                ✕
+                                🗑
                             </a>
                         </td>
                     </tr>
@@ -66,13 +70,25 @@
             </tbody>
         </table>
 
-        <!-- Общо за количката -->
-        <h4 class="text-end">
-            Общо: @Model.Items.Sum(i => i.Price * i.Quantity) лв.
-        </h4>
 
-        <div class="text-end">
-            <a class="btn btn-success" asp-controller="Order" asp-action="Create">Поръчай</a>
+        <div class="text-end mt-3">
+            <a asp-controller="Order"
+               asp-action="CreateFromCart"
+               class="btn btn-success btn-lg">
+                Потвърди поръчка
+            </a>
         </div>
+
+        <div class="text-end mt-4">
+            <h4>
+                Обща сума:
+                <span class="text-success">
+                    @((Model.Items.Sum(i => i.Price * i.Quantity)).ToString("0.00")) лв.
+                </span>
+            </h4>
+        </div>
+
+
+        
     }
 </div>

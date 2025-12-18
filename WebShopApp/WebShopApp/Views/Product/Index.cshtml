@@ -70,13 +70,18 @@
                         <p class="fw-bold mt-2">
                             @if (item.Discount > 0)
                             {
-                                <span class="text-muted text-decoration-line-through">@item.Price лв.</span>
-                                <span class="text-danger">@item.DiscountedPrice лв.</span>
+                                <span class="text-muted text-decoration-line-through">
+                                    @item.Price.ToString("0.00") лв.
+                                </span>
+                                <span class="text-danger">
+                                    @item.DiscountedPrice.ToString("0.00") лв.
+                                </span>
                             }
                             else
                             {
-                                @item.Price
-                               
+                                <span>
+                                    @item.Price.ToString("0.00") лв.
+                                </span>
                             }
                         </p>
 

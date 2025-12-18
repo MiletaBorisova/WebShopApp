@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using WebShopApp.Core.Contracts;
 using WebShopApp.Core.Services;
-using WebShopApp.Extensions;
+
 using WebShopApp.Infrastructure.Data.Entities;
 
 
@@ -68,6 +68,10 @@ namespace WebShopApp.Controllers
             if (item != null)
             {
                 await _cartService.UpdateQuantityAsync(userId, productId, item.Quantity - 1);
+            }
+            if (item.Quantity <= 0)
+            {
+                cart.Items.Remove(item);
             }
             return RedirectToAction("Index");
         }

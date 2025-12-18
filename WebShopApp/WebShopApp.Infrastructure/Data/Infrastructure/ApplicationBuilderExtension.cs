@@ -12,21 +12,21 @@ namespace WebShopApp.Infrastructure.Data.Infrastructure
 {
     public static class ApplicationBuilderExtension
     {
-        public static async Task<IApplicationBuilder> PrepareDatabase(this IApplicationBuilder app)
+        public static IApplicationBuilder PrepareDatabase(this IApplicationBuilder app)
         {
             using var serviceScope = app.ApplicationServices.CreateScope();
             var services = serviceScope.ServiceProvider;
-            await RoleSeeder(services);
-            await SeedAdministrator(services);
 
-            var dataCategory = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            SeedCategories(dataCategory);
+            RoleSeeder(services).GetAwaiter().GetResult();
+            SeedAdministrator(services).GetAwaiter().GetResult();
 
-            var dataBrand = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            SeedBrands(dataBrand);
+            var context = services.GetRequiredService<ApplicationDbContext>();
+            SeedCategories(context);
+            SeedBrands(context);
 
             return app;
         }
+
         private static async Task RoleSeeder(IServiceProvider serviceProvider)
         {
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
