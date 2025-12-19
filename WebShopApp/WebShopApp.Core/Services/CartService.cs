@@ -96,8 +96,30 @@ namespace WebShopApp.Core.Services
         public async Task<decimal> GetTotalAsync(string userId)
         {
             var cart = await GetCartByUserIdAsync(userId);
-            return cart.Items.Sum(i => i.Price * i.Quantity);
+
+            var subtotal = cart.Items.Sum(i => i.Price * i.Quantity);
+            var discount = subtotal * cart.DiscountPercent / 100m;
+
+            return subtotal - discount;
         }
+
+        public async Task<bool> ApplyPromoCodeAsync(string userId, string code)
+        {
+            var cart = await GetCartByUserIdAsync(userId);
+
+            var promo = await _context.PromoCodes
+                .FirstOrDefaultAsync(p => p.Code == code && p.IsActive);
+
+            if (promo == null)
+                return false;
+
+            cart.DiscountPercent = promo.DiscountPercent;
+            cart.PromoCode = promo.Code;
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
 
 
 

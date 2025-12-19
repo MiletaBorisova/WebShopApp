@@ -20,8 +20,31 @@ namespace WebShopApp.Infrastructure.Data
 
         public DbSet<Cart> Carts { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
+        public DbSet<PromoCode> PromoCodes { get; set; }
 
 
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<PromoCode>().HasData(
+                new PromoCode
+                {
+                    Id = 1,
+                    Code = "PROMO10",
+                    DiscountPercent = 10,
+                    IsActive = true
+                },
+                new PromoCode
+                {
+                    Id = 2,
+                    Code = "PROMO20",
+                    DiscountPercent = 20,
+                    IsActive = true
+                }
+            );
+        }
 
 
 

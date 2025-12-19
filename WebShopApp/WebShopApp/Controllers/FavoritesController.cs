@@ -37,7 +37,7 @@ namespace WebShopApp.Controllers
         {
             var userId = GetUserId();
             await _favoriteService.AddFavoriteAsync(userId, productId);
-            return RedirectToAction("Index", "Product"); // или към текущата страница
+            return RedirectToAction("Index", "Product"); 
         }
 
         [Authorize]
@@ -45,7 +45,7 @@ namespace WebShopApp.Controllers
         {
             var userId = GetUserId();
             await _favoriteService.RemoveFavoriteAsync(userId, productId);
-            return RedirectToAction("Index"); // връща към списъка с любимите
+            return RedirectToAction("Index"); 
         }
 
 

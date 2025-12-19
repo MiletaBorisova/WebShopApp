@@ -78,6 +78,24 @@ namespace WebShopApp.Controllers
 
 
 
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> ApplyPromoCode(string code)
+        {
+            var userId = _userManager.GetUserId(User);
+
+            var success = await _cartService.ApplyPromoCodeAsync(userId, code);
+
+            if (!success)
+                TempData["PromoError"] = "Невалиден или изтекъл промо код";
+
+            return RedirectToAction("Index");
+        }
+
+
+
+
         // GET: CartController/Details/5
         public ActionResult Details(int id)
         {

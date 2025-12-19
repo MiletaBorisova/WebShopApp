@@ -194,7 +194,7 @@ namespace WebShopApp.Controllers
                 );
             }
 
-            // 🧹 изчистване на количката
+            
             foreach (var item in cart.Items.ToList())
             {
                 await cartService.RemoveItemAsync(userId, item.ProductId);
