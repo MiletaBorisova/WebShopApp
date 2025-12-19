@@ -84,14 +84,24 @@ namespace WebShopApp.Controllers
         public async Task<IActionResult> ApplyPromoCode(string code)
         {
             var userId = _userManager.GetUserId(User);
+            var cart = await _cartService.GetCartByUserIdAsync(userId);
 
-            var success = await _cartService.ApplyPromoCodeAsync(userId, code);
+            decimal totalWithPromo = _cartService.CalculateTotalWithPromo(cart, code);
 
-            if (!success)
+            if (totalWithPromo < cart.Items.Sum(i => i.Price * i.Quantity))
+            {
+                TempData["PromoMessage"] = "Промо кодът е приложен.";
+                TempData["TotalWithPromo"] = totalWithPromo.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+            }
+            else
+            {
                 TempData["PromoError"] = "Невалиден или изтекъл промо код";
+            }
 
             return RedirectToAction("Index");
         }
+
 
 
 

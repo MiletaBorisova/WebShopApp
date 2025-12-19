@@ -45,11 +45,5 @@ namespace WebShopApp.Infrastructure.Data
                 }
             );
         }
-
-
-
-
-
-
     }
 }

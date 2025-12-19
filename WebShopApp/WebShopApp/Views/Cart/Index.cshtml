@@ -75,23 +75,35 @@
         <div class="text-end mt-3">
             @{
                 decimal subtotal = Model.Items.Sum(i => i.Price * i.Quantity);
-                decimal discount = subtotal * Model.DiscountPercent / 100m;
-                decimal total = subtotal - discount;
+                decimal total = subtotal;
+
+                if (TempData["TotalWithPromo"] != null)
+                {
+                    var promoString = TempData.Peek("TotalWithPromo")?.ToString();
+
+                    if (decimal.TryParse(promoString, System.Globalization.NumberStyles.Any,
+                    System.Globalization.CultureInfo.InvariantCulture, out var promoValue))
+                    {
+                        total = promoValue;
+                    }
+                }
+
+
             }
 
             <p>Междинна сума: <strong>@subtotal.ToString("0.00") лв.</strong></p>
 
-            @if (Model.DiscountPercent > 0)
+            @if (TempData["PromoMessage"] != null)
             {
-                <p class="text-success">
-                    Отстъпка (@Model.DiscountPercent%): -@discount.ToString("0.00") лв.
-                </p>
+                <p class="text-success">@TempData["PromoMessage"]</p>
             }
 
             <h4>
                 Общо:
                 <span class="text-success">@total.ToString("0.00") лв.</span>
             </h4>
+
+
         </div>
 
         

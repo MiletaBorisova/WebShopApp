@@ -14,7 +14,8 @@ namespace WebShopApp.Core.Contracts
         Task RemoveItemAsync(string userId, int productId);
         Task UpdateQuantityAsync(string userId, int productId, int quantity);
         Task<decimal> GetTotalAsync(string userId);
-        Task<bool> ApplyPromoCodeAsync(string userId, string code);
+        //Task<bool> ApplyPromoCodeAsync(string userId, string code);
+        decimal CalculateTotalWithPromo(Cart cart, string promoCode = null);
 
     }
 }

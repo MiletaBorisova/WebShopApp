@@ -22,7 +22,7 @@ namespace WebShopApp.Core.Services
         public async Task<bool> AddFavoriteAsync(string userId, int productId)
         {
             if (await _context.Favorites.AnyAsync(f => f.UserId == userId && f.ProductId == productId))
-                return false; // вече е в любимите
+                return false;
 
             var favorite = new Favorite
             {
