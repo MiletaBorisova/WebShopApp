@@ -173,10 +173,11 @@ namespace WebShopApp.Controllers
         }
 
 
-
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         [Authorize]
         public async Task<IActionResult> CreateFromCart(
-    [FromServices] ICartService cartService)
+        [FromServices] ICartService cartService)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var cart = await cartService.GetCartByUserIdAsync(userId);
@@ -199,7 +200,11 @@ namespace WebShopApp.Controllers
                 await cartService.RemoveItemAsync(userId, item.ProductId);
             }
 
-            return RedirectToAction("MyOrders");
+            return RedirectToAction("Success", "Order");
+        }
+        public IActionResult Success()
+        {
+            return View();
         }
 
     }
