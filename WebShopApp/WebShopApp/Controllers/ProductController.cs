@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.FlowAnalysis;
+using Microsoft.EntityFrameworkCore;
 using WebShopApp.Core.Contracts;
+using WebShopApp.Infrastructure.Data;
 using WebShopApp.Infrastructure.Data.Entities;
 using WebShopApp.Models.Brand;
 using WebShopApp.Models.Product;
@@ -16,18 +18,22 @@ namespace WebShopApp.Controllers
         private readonly IProductService _productService;
         private readonly ICategoryService _categoryService;
         private readonly IBrandService _brandService;
+        private readonly ApplicationDbContext _context;
+        
 
-        public ProductController(IProductService productService, ICategoryService categoryService, IBrandService brandService)
+        public ProductController(IProductService productService, ICategoryService categoryService, 
+            IBrandService brandService, ApplicationDbContext context)
         {
             this._productService = productService;
             this._categoryService = categoryService;
             this._brandService = brandService;
+            this._context = context;
         }
 
 
         // GET: ProductController
         [AllowAnonymous]
-        public ActionResult Index(string searchStringCategoryName, string searchStringBrandName)
+        public ActionResult Index(string searchStringCategoryName, string searchStringBrandName, string sort)
         {
            List<ProductIndexVM> products = _productService.GetProducts(searchStringCategoryName, searchStringBrandName)
                 .Select(product => new ProductIndexVM
@@ -45,6 +51,27 @@ namespace WebShopApp.Controllers
 
 
                 }).ToList();
+
+            switch (sort)
+            {
+                case "name_asc":
+                    products = products.OrderBy(p => p.ProductName).ToList();
+                    break;
+
+                case "name_desc":
+                    products = products.OrderByDescending(p => p.ProductName).ToList();
+                    break;
+
+                case "price_asc":
+                    products = products.OrderBy(p => p.Price).ToList();
+                    break;
+
+                case "price_desc":
+                    products = products.OrderByDescending(p => p.Price).ToList();
+                    break;
+            }
+
+
             return this.View(products);
         }
 

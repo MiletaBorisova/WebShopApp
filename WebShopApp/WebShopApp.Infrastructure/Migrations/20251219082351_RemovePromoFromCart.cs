@@ -18,13 +18,13 @@ namespace WebShopApp.Infrastructure.Migrations
                 oldClrType: typeof(string),
                 oldType: "nvarchar(max)");
 
-            migrationBuilder.DropColumn(
+            /*migrationBuilder.DropColumn(
                 name: "PromoCode",
                 table: "Carts");
 
             migrationBuilder.DropColumn(
                 name: "DiscountPercent",
-                table: "Carts");
+                table: "Carts");*/
 
         }
 

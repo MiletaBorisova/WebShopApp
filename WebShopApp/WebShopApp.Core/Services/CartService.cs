@@ -97,7 +97,7 @@ namespace WebShopApp.Core.Services
         {
             var cart = await GetCartByUserIdAsync(userId);
             var subtotal = cart.Items.Sum(i => i.Price * i.Quantity);
-            return subtotal; 
+            return subtotal;
         }
 
 

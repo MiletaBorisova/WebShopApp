@@ -28,11 +28,11 @@ namespace WebShopApp.Controllers
         {
             //string userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             //var user = context.Users.SingleOrDefault(u => u.Id == userId);
-            
+
             List<OrderIndexVM> orders = _orderService.GetOrders()
-                .Select(x => new OrderIndexVM 
+                .Select(x => new OrderIndexVM
                 {
-                    Id= x.Id,
+                    Id = x.Id,
                     OrderDate = x.OrderDate.ToString("dd-MMM-yyyy hh:mm", CultureInfo.InvariantCulture),
                     UserId = x.UserId,
                     User = x.User.UserName,
@@ -85,7 +85,7 @@ namespace WebShopApp.Controllers
         {
             Product product = _productService.GetProductById(id);
 
-            if (product == null) 
+            if (product == null)
             {
                 return NotFound();
             }
@@ -108,7 +108,7 @@ namespace WebShopApp.Controllers
         public ActionResult Create(OrderCreateVM bindingModel)
         {
 
-           string currentUserId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string currentUserId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var product = this._productService.GetProductById(bindingModel.ProductId);
 
@@ -117,7 +117,7 @@ namespace WebShopApp.Controllers
             {
                 return RedirectToAction("Denied", "Order");
             }
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 _orderService.Create(bindingModel.ProductId, currentUserId, bindingModel.Quantity);
             }
@@ -194,7 +194,7 @@ namespace WebShopApp.Controllers
                 );
             }
 
-            
+
             foreach (var item in cart.Items.ToList())
             {
                 await cartService.RemoveItemAsync(userId, item.ProductId);

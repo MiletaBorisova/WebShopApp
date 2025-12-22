@@ -25,20 +25,20 @@ namespace WebShopApp.Core.Services
         {
             var product = this._context.Products.SingleOrDefault(x => x.Id == productId);
 
-            if (product == null) 
-            { 
+            if (product == null)
+            {
                 return false;
             }
 
-            Order item = new Order 
-            { 
+            Order item = new Order
+            {
                 OrderDate = DateTime.Now,
                 ProductId = productId,
                 UserId = userId,
                 Quantity = quantity,
                 Price = product.Price,
                 Discount = product.Discount
-                    
+
             };
 
             product.Quantity -= quantity;
@@ -61,9 +61,9 @@ namespace WebShopApp.Core.Services
 
         public List<Order> GetOrdersByUser(string userId)
         {
-           return _context.Orders.Where(x => x.UserId == userId)
-                .OrderByDescending(x => x.OrderDate)
-                .ToList();
+            return _context.Orders.Where(x => x.UserId == userId)
+                 .OrderByDescending(x => x.OrderDate)
+                 .ToList();
         }
 
         public bool RemoveById(int orderId)
